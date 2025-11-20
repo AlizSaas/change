@@ -1,12 +1,22 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { getDb } from "./db/database";
-import { account, session, user, verification } from "./drizzle-out/auth-schema";
-
-export type BetterAuthInstance = ReturnType<typeof betterAuth>;
+import { account, session, user, verification,subscription } from "./drizzle-out/auth-schema";
+import { stripe } from "@better-auth/stripe";
+import Stripe from "stripe"
 let auth: BetterAuthInstance | undefined;
+export type BetterAuthInstance = ReturnType<typeof betterAuth>;
+type StripeConfig  = {
+  stripeWebhookSecret: string;
+  plans:any[],
+
+  stripeApiKey?:string;
+}
+
+
 export function createBetterAuth(
   database: NonNullable<Parameters<typeof betterAuth>[0]>["database"],
+  stripeConfig?: StripeConfig,
   google?: { clientId: string; clientSecret: string },
 ): BetterAuthInstance {
   return betterAuth({
@@ -20,9 +30,21 @@ export function createBetterAuth(
         clientSecret: google?.clientSecret ?? "",
       },
     },
+     plugins: [
+        stripe({
+            stripeClient: new Stripe(stripeConfig?.stripeApiKey || process.env.STRIPE_KEY!, {apiVersion:'2025-03-31.basil'}),
+            
+            stripeWebhookSecret:  stripeConfig?.stripeWebhookSecret ?? process.env.STRIPE_WEBHOOK_SECRET!,
+            createCustomerOnSignUp: true,
+            subscription:{
+              enabled:true,
+              plans: stripeConfig?.plans || []
+            }
+        })
+    ]
   });
 }
-export function getAuth(google: { clientId: string; clientSecret: string }): BetterAuthInstance {
+export function getAuth(google: { clientId: string; clientSecret: string, }, stripe: StripeConfig): BetterAuthInstance {
   if (auth) return auth;
    auth = createBetterAuth(
     drizzleAdapter(getDb(), {
@@ -32,9 +54,12 @@ export function getAuth(google: { clientId: string; clientSecret: string }): Bet
         session,
         account,
         verification,
+        subscription,
+        
       },
     }),
-    google
+    stripe,
+    google,
   );
 return auth;
 }

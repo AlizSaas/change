@@ -8,6 +8,20 @@
       "when": 1763564576876,
       "tag": "0000_aromatic_ultimates",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1763592266951,
+      "tag": "0001_workable_misty_knight",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1763592465498,
+      "tag": "0002_clumsy_true_believers",
+      "breakpoints": true
     }
   ]
 }

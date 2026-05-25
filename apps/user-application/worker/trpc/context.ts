@@ -15,6 +15,7 @@ export async function createContext({
     workerCtx,
     userInfo: {
       userId: userId,
+      
     },
   };
 }

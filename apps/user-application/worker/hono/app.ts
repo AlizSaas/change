@@ -20,23 +20,12 @@ const getAuthInstance = (env: Env) => {
       stripeWebhookSecret: env.STRIPE_WEBHOOK_KEY,
       stripeApiKey: env.STRIPE_SECRET_KEY,
       plans: [
-        {
-          name: "basic",
-          priceId: env.STRIPE_PRODUCT_BASIC,
-        },
-        {
-          name: "pro",
-          priceId: env.STRIPE_PRODUCT_PRO,
-        },
-        {
-          name: "enterprise",
-          priceId: env.STRIPE_PRODUCT_ENTERPRISE,
-        },
+        { name: "basic", priceId: env.STRIPE_PRODUCT_BASIC },
+        { name: "pro", priceId: env.STRIPE_PRODUCT_PRO },
+        { name: "enterprise", priceId: env.STRIPE_PRODUCT_ENTERPRISE },
       ],
-
     },
-
-    
+    env.RESEND_API_KEY,
   );
 };
 
@@ -67,15 +56,31 @@ App.all("/trpc/*", authMiddleware, (c) => {
   });
 });
 
-App.get("/click-socket", authMiddleware, async (c) => {
-  const userId = c.get("userId");
-  const headers = new Headers(c.req.raw.headers);
-  headers.set("account-id", userId);
-  const proxiedRequest = new Request(c.req.raw, { headers });
-  return c.env.BACKEND_SERVICE.fetch(proxiedRequest);
+const FORGOT_PASSWORD_LIMIT = 5; // max requests
+const FORGOT_PASSWORD_WINDOW = 60 * 60; // 1 hour in seconds
+
+App.post("/api/auth/forget-password", async (c, next) => {
+  const ip = c.req.header("CF-Connecting-IP") ?? "unknown";
+  const key = `rate:forgot:${ip}`;
+  const current = await c.env.AUTH_RATE_LIMIT.get(key);
+  const count = current ? parseInt(current) : 0;
+  if (count >= FORGOT_PASSWORD_LIMIT) {
+    return c.json({ error: "Too many requests. Try again later." }, 429);
+  }
+  await c.env.AUTH_RATE_LIMIT.put(key, String(count + 1), { expirationTtl: FORGOT_PASSWORD_WINDOW });
+  await next();
 });
 
 App.on(["POST", "GET"], "/api/auth/*", (c) => {
   const auth = getAuthInstance(c.env);
   return auth.handler(c.req.raw);
+});
+
+
+App.get("/click-socket", authMiddleware, async (c) => {
+  const userId = c.get("userId");
+  const headers = new Headers(c.req.raw.headers);
+  headers.set("account-id", userId);
+  const proxiedRequest = new Request(c.req.raw, { headers }); //
+  return c.env.BACKEND_SERVICE.fetch(proxiedRequest); //
 });

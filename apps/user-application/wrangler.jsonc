@@ -3,68 +3,49 @@
  * https://developers.cloudflare.com/workers/wrangler/configuration/
  */
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "user-application",
-  "main": "worker/index.ts",
-  "compatibility_date": "2025-06-17",
-  "compatibility_flags": ["nodejs_compat"],
-  "assets": {
-    "binding": "ASSETS",
-    "not_found_handling": "single-page-application",
-    "run_worker_first": ["/api/auth/*", "/trpc/*", "/click-socket"] // Paths to run the Worker on before falling back to assets 
-  },
-  "observability": {
-    "enabled": true,
-  },
-  "env": {
-   
-    "stage":{
-      "vars": {
-        "STRIPE_PRODUCT_BASIC": "price_1SVKiREfauWOp0uTXEdva2vE",
-"STRIPE_PRODUCT_PRO": "price_1SVKkFEfauWOp0uTYfWWkkKT",
-"STRIPE_PRODUCT_ENTERPRISE": "price_1SVKm2EfauWOp0uTUwDFBqqf"
-
-      },
-      
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_id": "71d526c9-fbb0-45ea-b739-627e06a7795f",
-      "remote": true
-      
-    }
-  ],
-  "services": [
-    {
-    "binding": "BACKEND_SERVICE", // name of the binding in your worker
-    "service": "data-service-stage",
-    "remote": true
-
-
-  }
-
-  ]
-    },
-     "production":{
-      
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_id": "bbac216a-1f82-48f6-8a20-44fa0c677822",
-      "remote": true
-      
-    }
-  ],
-  "services": [
-    {
-    "binding": "BACKEND_SERVICE", // name of the binding in your worker
-    "service": "data-service-production",
-    "remote": true
-
-
-  }
-
-  ]
-    },
-  }
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "user-application",
+	"main": "worker/index.ts",
+	"compatibility_date": "2025-06-17",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"assets": {
+		"binding": "ASSETS",
+		"not_found_handling": "single-page-application",
+		"run_worker_first": [
+			"/api/auth/*",
+			"/trpc/*",
+			"/click-socket"
+		]
+	},
+	"observability": {
+		"enabled": true,
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_id": "6c28b4bd-33d6-43bb-9daf-43eb755a63df",
+			"remote": true
+		}
+	],
+	"services": [
+		{
+			"binding": "BACKEND_SERVICE",
+			"service": "data-service-production",
+			"remote": true
+		}
+	],
+	"vars": {
+		"STRIPE_PRODUCT_BASIC": "price_1TalZG7BDRcK8nA4EsysHMUV",
+		"STRIPE_PRODUCT_PRO": "price_1TalbA7BDRcK8nA4adHwMXS4",
+		"STRIPE_PRODUCT_ENTERPRISE": "price_1TalcM7BDRcK8nA40MYK7hxp"
+	},
+	"kv_namespaces": [
+		{
+			"binding": "AUTH_RATE_LIMIT",
+			"id": "8c8033cfdc2847cab482f4f28391ccde",
+			"remote": true
+		}
+	]
 }

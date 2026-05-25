@@ -16,7 +16,7 @@ export class EvaluationScheduler extends DurableObject<Env> {
             this.clickData = await ctx.storage.get<ClickData>('click_data'); // initialize state from storage
         
         }) 
-    }
+    } // constructor 
 
     async  collectLinkClick(accountId:string, linkId:string, destinationUrl:string, destinatinCountryCode:string) {
    this.clickData = {
@@ -49,7 +49,7 @@ export class EvaluationScheduler extends DurableObject<Env> {
 
             }
         })
-    }
+    } // this alarm run in every 24 hours to start the evaluation workflow
 
   
 

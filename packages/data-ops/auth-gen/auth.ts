@@ -9,3 +9,4 @@ export const auth: ReturnType<typeof betterAuth> = createBetterAuth(drizzleAdapt
     provider: "sqlite"
   }
 ), )
+//this is a placeholder file to make sure that the auth instance is created only once in the data-ops package 

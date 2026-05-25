@@ -7,6 +7,7 @@ import moment from "moment";
 export { EvaluationScheduler} from "@/durable-objects/evaluation-scheduler";
 
 export const App = new Hono<{Bindings: Env}>();
+
 App.get('/click-socket', async (c) => {
   const upgradeHeader = c.req.header('Upgrade');
 	if (!upgradeHeader || upgradeHeader !== 'websocket') {
@@ -16,6 +17,7 @@ App.get('/click-socket', async (c) => {
   const accountId = c.req.header('account-id')
 
   if (!accountId) return  c.text('No Headers', 404);
+  
   const doId = c.env.LINK_CLICK_TRACKER_OBJECT.idFromName(accountId);
 	const stub = c.env.LINK_CLICK_TRACKER_OBJECT.get(doId);
   return await stub.fetch(c.req.raw)

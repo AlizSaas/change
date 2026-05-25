@@ -18,7 +18,7 @@ export function ActiveLinksTable() {
 
   const { data } = useSuspenseQuery(
     trpc.links.activeLinks.queryOptions(undefined, {
-      refetchInterval: 5000,
+      refetchInterval: 5000, // Refresh every 5 seconds
     }),
   );
 

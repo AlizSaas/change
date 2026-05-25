@@ -20,6 +20,7 @@ export const linksTrpcRoutes = t.router({
 
       return await getLinks(ctx.userInfo.userId, input.offset?.toString())
     }),
+
   createLink: t.procedure.input(createLinkSchema).mutation(async ({ctx, input}) => {
     const linkId = await createLink({
       accountId: ctx.userInfo.userId,
@@ -27,6 +28,9 @@ export const linksTrpcRoutes = t.router({
     });
     return linkId;
   }),
+
+
+  
   updateLinkName: t.procedure
     .input(
       z.object({

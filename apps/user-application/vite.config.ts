@@ -14,7 +14,7 @@ export default defineConfig({
     },
   },
   plugins: [
-    tsConfigPaths(),
+    tsConfigPaths(), // Support tsconfig paths
     tanstackRouter({ autoCodeSplitting: true }),
     viteReact(),
     tailwindcss(),

@@ -7,7 +7,7 @@ export async function aiDestinationChecker(env: Env, bodyText: string) {
     // Currently workersAi does not have all the valid input types. Cast to any as a stop gap
 	const result = await generateObject({
 		mode: 'json',
-		model: workersAi('@cf/deepseek-ai/deepseek-r1-distill-qwen-32b' ),
+		model: workersAi('@cf/meta/llama-3.1-8b-instruct-fp8'),
 		prompt:
 			`You will analyze the provided webpage content and determine if it reflects a product that is currently available, not available, or if the status is unclear.
 

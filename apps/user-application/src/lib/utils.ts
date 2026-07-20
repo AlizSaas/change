@@ -15,7 +15,7 @@ export const formatRelativeTime = (timestamp: string) => {
 
   if (diffInSeconds < 60) {
     return `${diffInSeconds} second${diffInSeconds !== 1 ? "s" : ""} ago`;
-  }
+  } 
 
   const diffInMinutes = Math.floor(diffInSeconds / 60);
   if (diffInMinutes < 60) {

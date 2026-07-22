@@ -51,7 +51,7 @@ Built with modern production-ready technologies:
 Frontend: Next.js / React
 Backend: Cloudflare Workers
 Database: D1 / PostgreSQL
-Authentication: Better Auth / Clerk
+Authentication: Better Auth 
 Payments: Stripe
 AI Analysis: OpenAI API
 Queue Processing: Cloudflare Queues
